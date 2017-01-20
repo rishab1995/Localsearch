@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_map"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.gtk.localsearch.Map">
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:id="@+id/mapFragment"
+        />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="450sp"
+        android:minHeight="200sp"
+        android:foregroundGravity="bottom"
+        android:padding="5sp"
+        android:id="@+id/frame"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom"
+        >
+        <!-- <fragment
+             android:layout_width="match_parent"
+             android:layout_height="200sp"
+             android:id="@+id/fragmentDetails"
+             />-->
+     </FrameLayout>
+
+</RelativeLayout>

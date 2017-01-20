@@ -1,0 +1,90 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingTop="50sp"
+    android:orientation="vertical"
+    tools:context="com.gtk.localsearch.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <!--<AutoCompleteTextView
+        android:text="AutoCompleteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchPlace"
+        android:hint="Enter the place"
+        android:onClick="selectPlace" />-->
+
+
+
+    <!--    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchPlace"
+            android:hint="Enter the place"
+            android:onClick="selectPlace"/>-->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchPlace"
+        android:text="Tap here to search place"
+        android:onClick="selectPlace"
+        android:textSize="20sp"
+        android:paddingTop="12sp"
+        android:paddingBottom="12sp"
+        android:paddingLeft="4sp"
+        android:translationZ="4sp"
+        android:background="#ECEFF1" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="0sp"
+        android:paddingTop="0sp">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/searchTerm"
+            android:layout_weight="3"
+            android:hint="Enter to be search"
+            android:paddingTop="10dp"
+            android:paddingBottom="10sp"
+            android:paddingLeft="4sp"
+            android:layout_marginTop="0sp"
+            android:fitsSystemWindows="false"
+            android:typeface="monospace"
+            />
+
+        <Button
+            android:text="Search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/search"
+            android:layout_weight="1"
+            android:onClick="Search"/>
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="5sp"
+        android:paddingRight="5sp"
+        android:id="@+id/results"/>
+
+    <!--    <android.support.design.widget.BottomNavigationView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:design="http://schema.android.com/apk/res/android.support.design"
+            android:id="@+id/navigation"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            design:menu="@menu/my_navigation_items" />-->
+
+</LinearLayout>
