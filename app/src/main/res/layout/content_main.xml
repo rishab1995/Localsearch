@@ -3,7 +3,6 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingTop="50sp"
     android:orientation="vertical"
     tools:context="com.gtk.localsearch.MainActivity"
@@ -33,8 +32,8 @@
         android:text="Tap here to search place"
         android:onClick="selectPlace"
         android:textSize="20sp"
-        android:paddingTop="12sp"
-        android:paddingBottom="12sp"
+        android:paddingTop="15sp"
+        android:paddingBottom="15sp"
         android:paddingLeft="4sp"
         android:translationZ="4sp"
         android:background="#ECEFF1" />
@@ -44,7 +43,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="0sp"
-        android:paddingTop="0sp">
+        android:paddingTop="4sp"
+        android:paddingBottom="4sp"
+        android:elevation="12dp">
 
         <EditText
             android:layout_width="wrap_content"
@@ -76,7 +77,13 @@
         android:layout_height="match_parent"
         android:paddingLeft="5sp"
         android:paddingRight="5sp"
-        android:id="@+id/results"/>
+        android:id="@+id/results"
+        android:isScrollContainer="false"
+        android:scrollbarSize="5dp"
+        android:soundEffectsEnabled="true"
+        android:smoothScrollbar="true"
+        style="@style/Widget.AppCompat.ListView"
+        android:background="#F1F8E9" />
 
     <!--    <android.support.design.widget.BottomNavigationView
             xmlns:android="http://schemas.android.com/apk/res/android"

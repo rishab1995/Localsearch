@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="10sp"
-    android:paddingTop="10sp">
+    android:paddingTop="10sp"
+    android:paddingLeft="4sp"
+    android:paddingRight="4sp"
+    android:elevation="6dp"
+    android:showDividers="none">
 
     <TextView
         android:text="TextView"
