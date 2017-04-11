@@ -12,18 +12,23 @@ public class ResultPlace implements Serializable {
     private String address;
     private double latitude;
     private  double longitude;
+    private String photo_reference;
 
-    public ResultPlace(String name, String address , double latitude , double longitude) {
+    public ResultPlace(String name, String address , double latitude , double longitude , String photo_reference) {
         this.title = name;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.photo_reference = photo_reference;
     }
 
     public String getAddress() {
         return address;
     }
 
+    public String getPhoto_reference() {
+        return photo_reference;
+    }
 
     public double getLatitude() {
         return latitude;

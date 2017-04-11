@@ -31,10 +31,6 @@ public class Downloader extends AsyncTask<String ,Integer , ArrayList<String>> {
     protected ArrayList doInBackground(String... params) {
         ArrayList<ResultPlace> result =new ArrayList<>();
         try {
-          /*  URL sUrl = new URL(params[0]);
-            Log.d("Value " , params[0]);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(sUrl.openConnection().getInputStream() ,"UTF-8"));
-            String json = reader.readLine().toString();*/
             Log.d("Value " , params[0]);
             String json = downloadUrl(params[0]);
             Log.d("Value " , json);
@@ -52,7 +48,14 @@ public class Downloader extends AsyncTask<String ,Integer , ArrayList<String>> {
                 double longitude = location.getDouble("lng");
                 double latitude = location.getDouble("lat");
                 Log.d("Result" , longitude + " , "+ latitude);
-                ResultPlace rp = new ResultPlace(Name , address , latitude , longitude);
+                String photo_references;
+                if(singleResult.has("photos")) {
+                    String photo_reference_url = singleResult.getJSONArray("photos").getJSONObject(0).getString("photo_reference");
+                   photo_references = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=300&photoreference=" + photo_reference_url + "&key=AIzaSyDchqRHH-7UyX1exvpeZd_ZPZKzvL9BBnQ";
+                    Log.d("resultt_photo", photo_references);
+                }else
+                    photo_references = "";
+                ResultPlace rp = new ResultPlace(Name , address , latitude , longitude , photo_references);
                 result.add(rp);
             }
 

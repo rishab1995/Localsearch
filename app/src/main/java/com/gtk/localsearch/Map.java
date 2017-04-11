@@ -22,6 +22,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -38,16 +39,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Google
     FragmentManager fm;
     FragmentTransaction fts;
     float frameHeight=500;
+    LatLng currentPosition;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-       /* if (checkforplay()) {
-            setContentView(R.layout.activity_main);
-            Toast.makeText(Map.this, "Perfect", Toast.LENGTH_LONG).show();
-            MapFragment mapfragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
-            mapfragment.getMapAsync(Map.this);
-        }*/
 
         getDataFromParentActivity();
         Log.d("result" , "Getting Data Successfully");
@@ -81,6 +77,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Google
         latlng = new LatLng(ll[0] , ll[1]);
         placeName = i.getStringExtra("Place_Name");
         selected_result = (ResultPlace) i.getSerializableExtra("selected_place_detail");
+        currentPosition = new LatLng(i.getDoubleExtra("Latitude", 0) , i.getDoubleExtra("Longitude" , 0));
         if(selected_result==null)
             Log.d("result" , "Result is emppty");
         else
@@ -94,27 +91,17 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Google
         map.addMarker(new MarkerOptions()
                 .position(latlng)
                 .title(placeName));
-        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(latlng , 20);
+        map.addMarker((new MarkerOptions()
+                .position(currentPosition)
+                .title("You are here")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))));
+        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(latlng , 15);
         map.animateCamera(cu);
         map.setOnMapLongClickListener(this);
         map.setOnCameraMoveListener(this);
         map.setOnCameraIdleListener(this);
     }
 
-   /* public boolean checkforplay() {
-        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
-        int isAvailable = api.isGooglePlayServicesAvailable(Map.this);
-        if (isAvailable == ConnectionResult.SUCCESS) {
-            return true;
-        } else if (api.isUserResolvableError(isAvailable)) {
-            Dialog dialog = api.getErrorDialog(this, isAvailable, 0);
-            dialog.show();
-        } else {
-            Toast.makeText(Map.this, "Cant connect to google play", Toast.LENGTH_LONG).show();
-        }
-        return false;
-    }
-*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

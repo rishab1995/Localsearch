@@ -37,7 +37,10 @@
                     android:icon="@drawable/ic_atm"/>
                 <item android:title="Bank"
                     android:id="@+id/near_bank"
-                    android:icon="@drawable/ic_bank"/>
+                    android:icon="@drawable/ic_bank" />
+                <item android:title="More"
+                    android:id="@+id/near_more"
+                    android:icon="@drawable/ic_more"/>
             </menu>
         </item>
     </group>

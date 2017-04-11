@@ -17,7 +17,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="450sp"
+        android:maxHeight="350sp"
         android:minHeight="200sp"
         android:foregroundGravity="bottom"
         android:padding="5sp"
