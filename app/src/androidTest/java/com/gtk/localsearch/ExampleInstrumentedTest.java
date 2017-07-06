@@ -23,4 +23,11 @@ public class ExampleInstrumentedTest {
 
         assertEquals("com.gtk.localsearch", appContext.getPackageName());
     }
+
+    public void test()
+    {
+        int a = 2;
+        assertEquals(2 , a);
+
+    }
 }

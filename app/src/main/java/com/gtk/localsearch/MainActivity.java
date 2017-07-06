@@ -1,17 +1,13 @@
 package com.gtk.localsearch;
 
-import android.*;
 import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.icu.text.SimpleDateFormat;
-import android.icu.util.Calendar;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -71,11 +67,6 @@ public class MainActivity extends AppCompatActivity
         implements LocationListener , NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, OnMapReadyCallback, AdapterView.OnItemClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveListener {
 
 
-    private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-    private static final int MORE_MENU_OPTION_LIST = 2;
-    private static final String TAG = "MSG" ;
-    private static final int PERMISSION_ACCESS_COARSE_LOCATION = 1;
-    private static final int PERMISSION_ACCESS_WRITE_STORAGE = 2;
     private EditText searchTerm;
     private TextView searchPlace;
     private String placeName;
@@ -88,12 +79,9 @@ public class MainActivity extends AppCompatActivity
     private Location location;
     private LocationRequest mLocationRequest;
     private Address user_location_address;
-    private Boolean LOCATION_PERMISSION_GURRANTED = false;
-    private Boolean WRITE_STORAGE_PERMISSION_GURRANTED = false;
     private String user_current_address;
     private int distance=500;
     private SharedPreferences getdistance;
-    private Boolean Item_selected_from_menu = false;
     private GoogleMap googleMap;
     private ArrayList<Marker> markers = new ArrayList<>();
     private LatLng user_current_latlong;
@@ -101,7 +89,6 @@ public class MainActivity extends AppCompatActivity
     FragmentManager fm;
     FragmentTransaction fts;
     Fragment detail_fragment;
-    private boolean fragment_visible = false;
     private boolean circle;
     private int rad;
     private boolean night_map;
@@ -116,7 +103,7 @@ public class MainActivity extends AppCompatActivity
         showMap();
         inialize();
 
-        if(LOCATION_PERMISSION_GURRANTED)
+        if(Constants.LOCATION_PERMISSION_GURRANTED)
             getCurrentLocation();
         else{
             Toast.makeText(this , "Failed to get Location" , Toast.LENGTH_LONG).show();
@@ -157,20 +144,22 @@ public class MainActivity extends AppCompatActivity
         mapfragment.getMapAsync(MainActivity.this);
     }
 
+
+    //Function for check storage Permission
     private void chekForStoragePermission() {
 
         if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this , new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE} , PERMISSION_ACCESS_WRITE_STORAGE);
+            ActivityCompat.requestPermissions(this , new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE} , Constants.PERMISSION_ACCESS_WRITE_STORAGE);
         }else
-            WRITE_STORAGE_PERMISSION_GURRANTED = true;
+            Constants.WRITE_STORAGE_PERMISSION_GURRANTED = true;
     }
 
 
+    //Inialize the variables
     private void inialize() {
         searchTerm = (EditText) findViewById(R.id.searchTerm);
         searchPlace = (TextView) findViewById(R.id.searchPlace);
         search = (Button) findViewById(R.id.search);
-        //resultView = (ListView) findViewById(R.id.results);
         actionBar = getSupportActionBar();
         getdistance = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         distance = Integer.parseInt(getdistance.getString("distance" , "500"));
@@ -184,6 +173,7 @@ public class MainActivity extends AppCompatActivity
         Log.d("Something", "Starting connecting Location");
     }
 
+    //To get Current Location
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d("Something" , "Connected Suucessfully");
@@ -192,13 +182,6 @@ public class MainActivity extends AppCompatActivity
         mLocationRequest.setInterval(1000);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             Toast.makeText(this , "Failed Permission" , Toast.LENGTH_LONG).show();
             return;
         }
@@ -240,26 +223,8 @@ public class MainActivity extends AppCompatActivity
         mapfragment.getMapAsync(MainActivity.this);
     }
 
-    /*  //Check for google play service
-    public boolean checkforplay() {
-        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
-        int isAvailable = api.isGooglePlayServicesAvailable(MainActivity.this);
-        if (isAvailable == ConnectionResult.SUCCESS) {
-            return true;
-        } else if (api.isUserResolvableError(isAvailable)) {
-            Dialog dialog = api.getErrorDialog(this, isAvailable, 0);
-            dialog.show();
-        } else {
-            Toast.makeText(MainActivity.this, "Cant connect to google play", Toast.LENGTH_LONG).show();
-        }
-        return false;
-    }*/
-
-    //Initialize the fields
-
     //Action perform when search click
     public void Search(View view) {
-        //String place = searchPlace.getText().toString();
         if(latlong==null)
         {
             if(user_location_address!=null)
@@ -273,6 +238,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    //Get the search result from url
     private void parseResultFromUrl() {
 
         String term = searchTerm.getText().toString();
@@ -280,12 +246,12 @@ public class MainActivity extends AppCompatActivity
        // Toast.makeText(this, term , Toast.LENGTH_LONG).show();
         Downloader download = new Downloader(this);
         String url;
-        if(Item_selected_from_menu) {
+        if(Constants.Item_selected_from_menu) {
             url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + latlong.latitude + "," + latlong.longitude + "&radius=" + distance + "&types=" + term + "&key=AIzaSyDchqRHH-7UyX1exvpeZd_ZPZKzvL9BBnQ";
-            Item_selected_from_menu = false;
+            Constants.Item_selected_from_menu = false;
         }else{
             url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + latlong.latitude + "," + latlong.longitude + "&radius=" + distance + "&types=" + term + "&keyword="+ term+ "&key=AIzaSyDchqRHH-7UyX1exvpeZd_ZPZKzvL9BBnQ";
-            Item_selected_from_menu = false;
+            Constants.Item_selected_from_menu = false;
         }
         Log.d("Resultu", url);
         download.execute(url);
@@ -315,7 +281,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent =
                     new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
                             .build(this);
-            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+            startActivityForResult(intent, Constants.PLACE_AUTOCOMPLETE_REQUEST_CODE);
         } catch (GooglePlayServicesRepairableException e) {
             // TODO: Handle the error.
         } catch (GooglePlayServicesNotAvailableException e) {
@@ -324,6 +290,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    //Action Perform when one of the item from the result is clicked
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -344,30 +311,31 @@ public class MainActivity extends AppCompatActivity
         Log.d("result" , "MainActivity Pass");
     }
 
+    //Action Performed when new activity is open
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+        if (requestCode == Constants.PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
-                Log.i(TAG, "Place: " + place.getName());
+                Log.i(Constants.TAG, "Place: " + place.getName());
                 //placeName = place.getName().toString();
                 searchPlace.setText(place.getName());
                 latlong = place.getLatLng();
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 // TODO: Handle the error.
-                Log.i(TAG, status.getStatusMessage());
+                Log.i(Constants.TAG, status.getStatusMessage());
 
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
             }
-        }else if(requestCode == MORE_MENU_OPTION_LIST){
+        }else if(requestCode == Constants.MORE_MENU_OPTION_LIST){
             if (resultCode == RESULT_OK) {
                near_by_search(data.getStringExtra("TERM"));
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 // TODO: Handle the error.
-                Log.i(TAG, status.getStatusMessage());
+                Log.i(Constants.TAG, status.getStatusMessage());
 
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
@@ -387,28 +355,29 @@ public class MainActivity extends AppCompatActivity
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION },
-                    PERMISSION_ACCESS_COARSE_LOCATION);
+                    Constants.PERMISSION_ACCESS_COARSE_LOCATION);
         }else
-            LOCATION_PERMISSION_GURRANTED = true;
+            Constants.LOCATION_PERMISSION_GURRANTED = true;
     }
 
 
+    //Asking for Storage and location permission
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case PERMISSION_ACCESS_COARSE_LOCATION:
+            case Constants.PERMISSION_ACCESS_COARSE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // All good!
-                    LOCATION_PERMISSION_GURRANTED = true;
+                    Constants.LOCATION_PERMISSION_GURRANTED = true;
                     chekForStoragePermission();
                 } else {
                     Toast.makeText(this, "Need your location!", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
-            case PERMISSION_ACCESS_WRITE_STORAGE:
+            case Constants.PERMISSION_ACCESS_WRITE_STORAGE:
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    WRITE_STORAGE_PERMISSION_GURRANTED = true;
+                    Constants.WRITE_STORAGE_PERMISSION_GURRANTED = true;
                     getCurrentLocation();
                 }
                 else
@@ -428,6 +397,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    //Action perform when navigation item is clicked
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -452,7 +422,7 @@ public class MainActivity extends AppCompatActivity
                 near_by_search(item);
                 break;
             case R.id.near_more: Intent menu_intent = new Intent(MainActivity.this , MoreNearPlaces.class);
-                startActivityForResult(menu_intent ,MORE_MENU_OPTION_LIST);
+                startActivityForResult(menu_intent ,Constants.MORE_MENU_OPTION_LIST);
                 break;
         }
 
@@ -461,6 +431,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    //Search perform from Menu Items
     private void near_by_search(MenuItem item) {
         if(user_location_address == null)
             Toast.makeText(this , "Failed to find your Location" , Toast.LENGTH_LONG).show();
@@ -469,11 +440,13 @@ public class MainActivity extends AppCompatActivity
             latlong = new LatLng(user_location_address.getLatitude(), user_location_address.getLongitude());
             searchPlace.setText(user_current_address);
             searchTerm.setText(item.getTitle());
-            Item_selected_from_menu = true;
+            Constants.Item_selected_from_menu = true;
             parseResultFromUrl();
         }
     }
 
+
+    //Search perform from input field
    public void near_by_search(String title) {
         if(user_location_address == null)
             Toast.makeText(this , "Failed to find your Location" , Toast.LENGTH_LONG).show();
@@ -503,6 +476,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    //When Mao is Created
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap= googleMap;
@@ -529,6 +503,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    //Move yo the Particular location
     private void goToLocation(Address user_address)
     {
         double lat = user_address.getLatitude();
@@ -539,6 +514,7 @@ public class MainActivity extends AppCompatActivity
         googleMap.animateCamera(cu);
     }
 
+    //To display the result on Map
     private void show_result_on_map(ArrayList<ResultPlace> resultPlaces)
     {
         googleMap.clear();
@@ -563,6 +539,7 @@ public class MainActivity extends AppCompatActivity
         googleMap.animateCamera(cu);
     }
 
+    //To display the result on fragment
     private void setResultListFragement(ArrayList<ResultPlace> resultplace){
         fm = getSupportFragmentManager();
         fts = fm.beginTransaction();
@@ -572,32 +549,33 @@ public class MainActivity extends AppCompatActivity
         detail_fragment.setArguments(results_bundle);
         resilt_frame= (FrameLayout) findViewById(R.id.result_frame);
         fts.add(resilt_frame.getId() , detail_fragment).commit();
-        resilt_frame.animate().setDuration(700).translationY(1000);
+        resilt_frame.animate().setDuration(700).translationY(2000);
     }
 
+    //To show or Hide the fragment
     private void showFragment() {
-        if(fragment_visible){
-            resilt_frame.animate().setDuration(700).translationY(1000);
-            fragment_visible = false;
+        if(Constants.fragment_visible){
+            resilt_frame.animate().setDuration(700).translationY(2000);
+            Constants.fragment_visible = false;
         }else {
             resilt_frame.animate().setDuration(700).translationY(0);
-            fragment_visible = true;
+            Constants.fragment_visible = true;
         }
     }
 
     @Override
     public void onMapClick(LatLng latLng) {
-        if(fragment_visible){
-            resilt_frame.animate().setDuration(700).translationY(1000);
-            fragment_visible = false;
+        if(Constants.fragment_visible){
+            resilt_frame.animate().setDuration(700).translationY(2000);
+            Constants.fragment_visible = false;
         }
     }
 
     @Override
     public void onCameraMove() {
-        if(fragment_visible){
-            resilt_frame.animate().setDuration(700).translationY(1000);
-            fragment_visible = false;
+        if(Constants.fragment_visible){
+            resilt_frame.animate().setDuration(700).translationY(2000);
+            Constants.fragment_visible = false;
         }
     }
 }
