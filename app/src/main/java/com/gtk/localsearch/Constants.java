@@ -15,4 +15,5 @@ public class Constants {
     public static Boolean WRITE_STORAGE_PERMISSION_GURRANTED = false;
     public static Boolean Item_selected_from_menu = false;
     public static boolean fragment_visible = false;
+    public static int TEST = 0;
 }
